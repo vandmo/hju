@@ -21,4 +21,4 @@ jobs:
         run: go mod download
 
       - name: Build
-        run: go build -v ./cmd/gh
+        run: go build .

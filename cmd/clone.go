@@ -3,60 +3,53 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/cli/safeexec"
 	"github.com/spf13/cobra"
-	"io/ioutil"
 	"os"
+	"os/exec"
 )
 
 type Repositories struct {
 	Repositories []string `json:"repositories"`
 }
 
-// cloneCmd represents the clone command
+func git(arg ...string) error {
+	gitBin, err := safeexec.LookPath("git")
+	if err != nil {
+		return err
+	}
+	cmd := exec.Command(gitBin, arg...)
+	return cmd.Run()
+}
+
 var cloneCmd = &cobra.Command{
 	Use:   "clone",
 	Short: "Clones the needed repositories",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("clone called")
-		// Open our jsonFile
-		jsonFile, err := os.Open("hju.json")
-		// if we os.Open returns an error then handle it
-		if err != nil {
-			fmt.Println(err)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		jsonFile, fileOpenErr := os.Open("hju.json")
+		if fileOpenErr != nil {
+			return fileOpenErr
 		}
-		fmt.Println("Successfully Opened hju.json")
-		// defer the closing of our jsonFile so that we can parse it later on
 		defer jsonFile.Close()
 
-		// read our opened jsonFile as a byte array.
-		byteValue, _ := ioutil.ReadAll(jsonFile)
-
-		// we initialize our Users array
+		decoder := json.NewDecoder(jsonFile)
 		var repositories Repositories
-
-		// we unmarshal our byteArray which contains our
-		// jsonFile's content into 'users' which we defined above
-		json.Unmarshal(byteValue, &repositories)
-
-		// we iterate through every user within our users array and
-		// print out the user Type, their name, and their facebook url
-		// as just an example
-		for i := 0; i < len(repositories.Repositories); i++ {
-			fmt.Println("Cloning: " + repositories.Repositories[i])
+		decoderErr := decoder.Decode(&repositories)
+		if decoderErr != nil {
+			return decoderErr
 		}
+
+		for _, repo := range repositories.Repositories {
+			fmt.Println("Cloning: " + repo)
+			gitErr := git("clone", repo)
+			if gitErr != nil {
+				return gitErr
+			}
+		}
+		return nil
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(cloneCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// cloneCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// cloneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

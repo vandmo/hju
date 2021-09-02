@@ -1,0 +1,38 @@
+name: Lint
+on:
+  push:
+    paths:
+    - "**.go"
+    - go.mod
+    - go.sum
+  pull_request:
+    paths:
+    - "**.go"
+    - go.mod
+    - go.sum
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Go 1.16
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Verify dependencies
+      run: |
+        go mod verify
+        go mod download
+
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: latest
+
+    - name: Run checks
+      run: bash scripts/lint.bash

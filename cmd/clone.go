@@ -1,55 +1,49 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
-    "os"
-    "io/ioutil"
-    "encoding/json"
 	"github.com/spf13/cobra"
+	"io/ioutil"
+	"os"
 )
 
 type Repositories struct {
-    Repositories []string `json:"repositories"`
+	Repositories []string `json:"repositories"`
 }
 
 // cloneCmd represents the clone command
 var cloneCmd = &cobra.Command{
 	Use:   "clone",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Clones the needed repositories",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("clone called")
-        // Open our jsonFile
-        jsonFile, err := os.Open("hju.json")
-        // if we os.Open returns an error then handle it
-        if err != nil {
-            fmt.Println(err)
-        }
-        fmt.Println("Successfully Opened hju.json")
-        // defer the closing of our jsonFile so that we can parse it later on
-        defer jsonFile.Close()
+		// Open our jsonFile
+		jsonFile, err := os.Open("hju.json")
+		// if we os.Open returns an error then handle it
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("Successfully Opened hju.json")
+		// defer the closing of our jsonFile so that we can parse it later on
+		defer jsonFile.Close()
 
-        // read our opened jsonFile as a byte array.
-        byteValue, _ := ioutil.ReadAll(jsonFile)
+		// read our opened jsonFile as a byte array.
+		byteValue, _ := ioutil.ReadAll(jsonFile)
 
-        // we initialize our Users array
-        var repositories Repositories
+		// we initialize our Users array
+		var repositories Repositories
 
-        // we unmarshal our byteArray which contains our
-        // jsonFile's content into 'users' which we defined above
-        json.Unmarshal(byteValue, &repositories)
+		// we unmarshal our byteArray which contains our
+		// jsonFile's content into 'users' which we defined above
+		json.Unmarshal(byteValue, &repositories)
 
-        // we iterate through every user within our users array and
-        // print out the user Type, their name, and their facebook url
-        // as just an example
-        for i := 0; i < len(repositories.Repositories); i++ {
-            fmt.Println("Cloning: " + repositories.Repositories[i])
-        }
+		// we iterate through every user within our users array and
+		// print out the user Type, their name, and their facebook url
+		// as just an example
+		for i := 0; i < len(repositories.Repositories); i++ {
+			fmt.Println("Cloning: " + repositories.Repositories[i])
+		}
 	},
 }
 

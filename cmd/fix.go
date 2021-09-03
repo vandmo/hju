@@ -3,28 +3,29 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/vandmo/hju/core"
+	"github.com/vandmo/hju/git"
 )
 
 var fixCmd = &cobra.Command{
 	Use:   "fix",
 	Short: "Formats hju.json and fixes .gitignore accordingly",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		repositories, parseErr := core.ParseHjuFile()
+		hjuFile, parseErr := core.ParseHjuFile()
 		if parseErr != nil {
 			return parseErr
 		}
 
-		writeErr := core.WriteHjuFile(repositories)
+		writeErr := hjuFile.Write()
 		if writeErr != nil {
 			return writeErr
 		}
 
-		gitIgnore, gitIgnoreParseErr := core.ParseGitIgnore()
+		gitIgnore, gitIgnoreParseErr := git.ParseGitIgnore()
 		if gitIgnoreParseErr != nil {
 			return gitIgnoreParseErr
 		}
-		for _, repo := range repositories {
-			gitIgnore.AddIfNeeded(repo)
+		for _, folder := range hjuFile.Folders {
+			gitIgnore.AddRootFolderIfNeeded(folder)
 		}
 		gitIgnoreWriteErr := gitIgnore.Write()
 		if gitIgnoreWriteErr != nil {

@@ -1,22 +1,10 @@
-package core
+package git
 
 import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/exec"
-
-	"github.com/cli/safeexec"
 )
-
-func GitIt(arg ...string) error {
-	gitBin, err := safeexec.LookPath("git")
-	if err != nil {
-		return err
-	}
-	cmd := exec.Command(gitBin, arg...)
-	return cmd.Run()
-}
 
 type GitIgnore struct {
 	lines []string
@@ -62,9 +50,27 @@ func (gi *GitIgnore) Write() error {
 	return w.Flush()
 }
 
+func (gi *GitIgnore) Contains(line string) bool {
+	if gi.lines != nil {
+		for _, existingLine := range gi.lines {
+			if line == existingLine {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (gi *GitIgnore) AddRootFolderIfNeeded(line string) {
+	gi.AddIfNeeded("/" + line + "/")
+}
+
 func (gi *GitIgnore) AddIfNeeded(line string) {
 	if gi.lines == nil {
 		gi.lines = make([]string, 0)
+	}
+	if gi.Contains(line) {
+		return
 	}
 	gi.lines = append(gi.lines, line)
 }

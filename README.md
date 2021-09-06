@@ -26,12 +26,18 @@ This will have created a file named _hju.json_ which contains a list of the adde
 ## clone
 Clones all child repositories.
 
+## switch [-c|--create]
+Switches to a branch in all managed repositories. Optionally creates it if missing.
+
 ## fix
 Normalizes hju.json and makes sure all entries are in .gitignore
 
 ## fast-forward
-Runs `git pull --ff-only` in all child repositories
+Runs `git pull --ff-only` in all child repositories.
+
+## remove
+Removes a repository based on its folder name.
 
 ## status
-Prints a summary of the status of all child repositories
+Prints a summary of the status of all child repositories.
 

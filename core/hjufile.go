@@ -58,6 +58,16 @@ func (hf *HjuFile) Add(repo string) {
 	hf.Repositories = append(hf.Repositories, repo)
 }
 
+func (hf *HjuFile) RemoveByFolder(folder string) {
+	old := hf.Repositories
+	hf.Repositories = hf.Repositories[:0]
+	for _, repository := range old {
+		if git.FolderName(repository) != folder {
+			hf.Repositories = append(hf.Repositories, repository)
+		}
+	}
+}
+
 func (hf *HjuFile) Write() error {
 	sort.Strings(hf.Repositories)
 	jsonFile, fileErr := os.Create("hju.json")

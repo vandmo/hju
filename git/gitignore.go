@@ -65,6 +65,20 @@ func (gi *GitIgnore) AddRootFolderIfNeeded(line string) {
 	gi.AddIfNeeded("/" + line + "/")
 }
 
+func (gi *GitIgnore) Remove(entry string) {
+	old := gi.lines
+	gi.lines = gi.lines[:0]
+	for _, line := range old {
+		if entry != line {
+			gi.lines = append(gi.lines, line)
+		}
+	}
+}
+
+func (gi *GitIgnore) RemoveRootFolder(line string) {
+	gi.Remove("/" + line + "/")
+}
+
 func (gi *GitIgnore) AddIfNeeded(line string) {
 	if gi.lines == nil {
 		gi.lines = make([]string, 0)

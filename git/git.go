@@ -67,9 +67,32 @@ func Status(folder string) (*Summary, error) {
 	return &summary, nil
 }
 
+func HasBranch(folder string, branch string) (bool, error) {
+	cmd, err := Command("-C", folder, "rev-parse", "--verify", "--quiet", branch)
+	if err != nil {
+		return false, err
+	}
+	return cmd.Run() == nil, nil
+}
+
 func FastForward(folder string) error {
 	fmt.Println("--- \033[32mFᴀsᴛ Fᴏʀᴡᴀʀᴅɪɴɢ " + folder + "\033[0m")
 	return Run("-C", folder, "pull", "--ff-only")
+}
+
+func Switch(folder string, branch string, create bool) error {
+	hasBranch, err := HasBranch(folder, branch)
+	if err != nil {
+		return err
+	}
+
+	if hasBranch {
+		fmt.Printf("--- \033[32mSwitching to branch %s in %s\033[0m\n", branch, folder)
+		return Run("-C", folder, "switch", branch)
+	} else {
+		fmt.Printf("--- \033[32mCreating and switching to branch %s in %s\033[0m\n", branch, folder)
+		return Run("-C", folder, "switch", "-c", branch)
+	}
 }
 
 func PrintStatus(folder string) error {

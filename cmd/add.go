@@ -13,17 +13,23 @@ var addCmd = &cobra.Command{
 	Short: "Adds a repository",
 	Args:  cobra.ExactValidArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		repo := args[0]
+		repository := args[0]
 		hjuFile, parseErr := core.ParseHjuFileOrNew()
 		if parseErr != nil {
 			return parseErr
 		}
 
-		folderName := git.FolderName(repo)
+		folderName := git.FolderName(repository)
 		if hjuFile.ContainsFolder(folderName) {
 			return fmt.Errorf("Trying to add %s which already exists", folderName)
 		}
-		hjuFile.Add(repo)
+
+		gitErr := git.Clone(repository)
+		if gitErr != nil {
+			return gitErr
+		}
+
+		hjuFile.Add(repository)
 
 		writeErr := hjuFile.Write()
 		if writeErr != nil {

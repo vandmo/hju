@@ -15,6 +15,17 @@ archives:
     windows: Windows
     386: i386
     amd64: x86_64
+nfpms:
+- license: Apache 2.0
+  maintainer: Mikael Vandmo
+  homepage: https://github.com/vandmo/hju
+  bindir: /usr/bin
+  dependencies:
+  - git
+  description: Tool for managing a set of repositories in a parent repository.
+  formats:
+  - deb
+  - rpm
 checksum:
   name_template: 'checksums.txt'
 snapshot:

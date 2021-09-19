@@ -10,7 +10,7 @@ import (
 	"github.com/cli/safeexec"
 )
 
-func Command(arg ...string) (*exec.Cmd, error) {
+func command(arg ...string) (*exec.Cmd, error) {
 	gitBin, err := safeexec.LookPath("git")
 	if err != nil {
 		return nil, err
@@ -18,8 +18,8 @@ func Command(arg ...string) (*exec.Cmd, error) {
 	return exec.Command(gitBin, arg...), nil
 }
 
-func Run(arg ...string) error {
-	cmd, err := Command(arg...)
+func run(arg ...string) error {
+	cmd, err := command(arg...)
 	if err != nil {
 		return err
 	}
@@ -28,8 +28,8 @@ func Run(arg ...string) error {
 	return cmd.Run()
 }
 
-func RunC(folder string, arg0 string, arg1 string) (string, error) {
-	cmd, err := Command("-C", folder, arg0, arg1)
+func runC(folder string, arg0 string, arg1 string) (string, error) {
+	cmd, err := command("-C", folder, arg0, arg1)
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +41,7 @@ func RunC(folder string, arg0 string, arg1 string) (string, error) {
 }
 
 func SymbolicRef(folder string, symbol string) (string, error) {
-	return RunC(folder, "symbolic-ref", symbol)
+	return runC(folder, "symbolic-ref", symbol)
 }
 
 type Summary struct {
@@ -50,7 +50,7 @@ type Summary struct {
 }
 
 func Status(folder string) (*Summary, error) {
-	lines, err := RunC(folder, "status", "--porcelain")
+	lines, err := runC(folder, "status", "--porcelain")
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func Status(folder string) (*Summary, error) {
 }
 
 func HasBranch(folder string, branch string) (bool, error) {
-	cmd, err := Command("-C", folder, "rev-parse", "--verify", "--quiet", branch)
+	cmd, err := command("-C", folder, "rev-parse", "--verify", "--quiet", branch)
 	if err != nil {
 		return false, err
 	}
@@ -77,7 +77,7 @@ func HasBranch(folder string, branch string) (bool, error) {
 
 func FastForward(folder string) error {
 	fmt.Println("--- \033[32mFᴀsᴛ Fᴏʀᴡᴀʀᴅɪɴɢ " + folder + "\033[0m")
-	return Run("-C", folder, "pull", "--ff-only")
+	return run("-C", folder, "pull", "--ff-only")
 }
 
 func Switch(folder string, branch string, create bool) error {
@@ -88,10 +88,10 @@ func Switch(folder string, branch string, create bool) error {
 
 	if hasBranch {
 		fmt.Printf("--- \033[32mSwitching to branch %s in %s\033[0m\n", branch, folder)
-		return Run("-C", folder, "switch", branch)
+		return run("-C", folder, "switch", branch)
 	} else {
 		fmt.Printf("--- \033[32mCreating and switching to branch %s in %s\033[0m\n", branch, folder)
-		return Run("-C", folder, "switch", "-c", branch)
+		return run("-C", folder, "switch", "-c", branch)
 	}
 }
 
@@ -121,7 +121,7 @@ func Clone(url string) error {
 		return nil
 	}
 	fmt.Println("--- \033[32mℂ𝕃𝕆ℕ𝕀ℕ𝔾: " + url + "\033[0m")
-	return Run("clone", url)
+	return run("clone", url)
 }
 
 func FolderName(gitURL string) string {

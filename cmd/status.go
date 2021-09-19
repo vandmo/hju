@@ -9,6 +9,7 @@ import (
 var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Prints status summary for all managed repositories",
+	Args:  cobra.ExactValidArgs(0),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		hjuFile, parseErr := core.ParseHjuFile()
 		if parseErr != nil {

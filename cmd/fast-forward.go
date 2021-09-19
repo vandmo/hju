@@ -9,6 +9,7 @@ import (
 var ffCmd = &cobra.Command{
 	Use:   "fast-forward",
 	Short: "Fetches and forwards in all managed repositories",
+	Args:  cobra.ExactValidArgs(0),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		hjuFile, parseErr := core.ParseHjuFile()
 		if parseErr != nil {

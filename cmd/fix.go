@@ -9,6 +9,7 @@ import (
 var fixCmd = &cobra.Command{
 	Use:   "fix",
 	Short: "Formats hju.json and fixes .gitignore accordingly",
+	Args:  cobra.ExactValidArgs(0),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		hjuFile, parseErr := core.ParseHjuFile()
 		if parseErr != nil {

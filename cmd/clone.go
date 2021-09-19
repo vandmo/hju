@@ -9,6 +9,7 @@ import (
 var cloneCmd = &cobra.Command{
 	Use:   "clone",
 	Short: "Clones the needed repositories",
+	Args:  cobra.ExactValidArgs(0),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		hjuFile, parseErr := core.ParseHjuFile()
 		if parseErr != nil {

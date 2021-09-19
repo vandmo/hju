@@ -1,7 +1,7 @@
 package cmd
 
 import (
-    "fmt"
+	"fmt"
 
 	"github.com/spf13/cobra"
 	"github.com/vandmo/hju/core"
@@ -17,7 +17,7 @@ var foldersCmd = &cobra.Command{
 			return parseErr
 		}
 		for _, folder := range hjuFile.Folders {
-            fmt.Println(folder)
+			fmt.Println(folder)
 		}
 		return nil
 	},

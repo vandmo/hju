@@ -6,6 +6,22 @@ _hju_ is a tool to manage a set of repositories in a parent repository.
 The biggest difference with git submodules is that submodules points to specific commits in the child repositories.
 The managed repositories are in a file named _hju.json_ and the folders are ignored using .gitignore when using hju to add repositories.
 
+# Installation
+
+## Linux, Debian based
+```bash
+echo "deb [trusted=yes] https://apt.fury.io/bztk/ /" | sudo tee /etc/apt/sources.list.d/bztk.list > /dev/null
+sudo apt update
+sudo apt install hju
+```
+
+## Linux, Red Hat based
+Add the following YUM Repository: https://yum.fury.io/bztk/
+`sudo yum install hju`
+
+## Other
+Download the suitable release and unpack it.
+
 # Commands
 
 ## add
@@ -40,4 +56,3 @@ Removes a repository based on its folder name.
 
 ## status
 Prints a summary of the status of all child repositories.
-

@@ -42,6 +42,9 @@ This will have created a file named _hju.json_ which contains a list of the adde
 ## clone
 Clones all child repositories.
 
+## folders
+Lists all managed folders. Can be used as pipe input.
+
 ## switch [-c|--create]
 Switches to a branch in all managed repositories. Optionally creates it if missing.
 

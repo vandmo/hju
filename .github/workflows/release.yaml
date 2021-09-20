@@ -39,6 +39,6 @@ jobs:
         curl --form package=@dist/hju*_linux_386.deb https://{$GEMFURY_PUSH_TOKEN}@push.fury.io/bztk/
         curl --form package=@dist/hju*_linux_amd64.deb https://{$GEMFURY_PUSH_TOKEN}@push.fury.io/bztk/
         curl --form package=@dist/hju*_linux_arm64.deb https://{$GEMFURY_PUSH_TOKEN}@push.fury.io/bztk/
-        curl --form package=@dist/hju*__linux_386.rpm https://{$GEMFURY_PUSH_TOKEN}@push.fury.io/bztk/
+        curl --form package=@dist/hju*_linux_386.rpm https://{$GEMFURY_PUSH_TOKEN}@push.fury.io/bztk/
         curl --form package=@dist/hju*_linux_amd64.rpm https://{$GEMFURY_PUSH_TOKEN}@push.fury.io/bztk/
         curl --form package=@dist/hju*_linux_arm64.rpm https://{$GEMFURY_PUSH_TOKEN}@push.fury.io/bztk/

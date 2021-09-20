@@ -2,8 +2,10 @@ package git
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -34,12 +36,20 @@ func Status(folder string) (*Summary, error) {
 	return &summary, nil
 }
 
-func HasBranch(folder string, branch string) (bool, error) {
-	cmd, err := command("-C", folder, "rev-parse", "--verify", "--quiet", branch)
+func HasRef(folder string, ref string) (bool, error) {
+	cmd, err := command("-C", folder, "show-ref", "--quiet", ref)
 	if err != nil {
 		return false, err
 	}
-	return cmd.Run() == nil, nil
+	runErr := cmd.Run()
+	if runErr == nil {
+		return true, nil
+	}
+	var exitError *exec.ExitError
+	if errors.As(runErr, &exitError) && exitError.ExitCode() == 1 {
+		return false, nil
+	}
+	return false, runErr
 }
 
 func FastForward(folder string) error {
@@ -48,7 +58,7 @@ func FastForward(folder string) error {
 }
 
 func Switch(folder string, branch string, create bool) error {
-	hasBranch, err := HasBranch(folder, branch)
+	hasBranch, err := HasRef(folder, branch)
 	if err != nil {
 		return err
 	}
@@ -56,9 +66,12 @@ func Switch(folder string, branch string, create bool) error {
 	if hasBranch {
 		fmt.Printf("--- \033[32mSwitching to branch %s in %s\033[0m\n", branch, folder)
 		return run("-C", folder, "switch", branch)
-	} else {
+	} else if create {
 		fmt.Printf("--- \033[32mCreating and switching to branch %s in %s\033[0m\n", branch, folder)
 		return run("-C", folder, "switch", "-c", branch)
+	} else {
+		fmt.Printf("--- \033[32mNOT creating NOR switching to branch %s in %s\033[0m\n", branch, folder)
+		return nil
 	}
 }
 

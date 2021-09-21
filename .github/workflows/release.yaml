@@ -45,7 +45,11 @@ jobs:
       run: cat internal/buildinfo.go
 
     - name: Commit internal/buildinfo.go
-      run: git add internal/buildinfo.go && git commit -m"Add internal/buildinfo.go"
+      run: |
+        git config --global user.email "mikael@vandmo.se"
+        git config --global user.name "Mikael Vandmo"
+        git add internal/buildinfo.go
+        git commit -m"Add internal/buildinfo.go"
 
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v2

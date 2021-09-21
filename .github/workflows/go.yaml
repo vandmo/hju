@@ -17,25 +17,6 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: Generate internal/buildinfo.go
-      uses: actions/github-script@v4
-      with:
-        script: |
-          const fs = require('fs')
-          const now = new Date()
-          let buildinfo = ''
-          buildinfo += 'package internal\n\n'
-          buildinfo += 'const (\n'
-          buildinfo += '\t'+`version = "${context.ref}"`+'\n'
-          buildinfo += '\t'+`date    = "${now.toISOString()}"`+'\n'
-          buildinfo += '\t'+`builder = "${context.actor}"`+'\n'
-          buildinfo += '\t'+`commit  = "${context.sha}"`+'\n'
-          buildinfo += ')\n'
-          fs.writeFileSync('internal/buildinfo.go', buildinfo)
-
-    - name: Inspect internal/buildinfo.go
-      run: cat internal/buildinfo.go
-
     - name: Download dependencies
       run: go mod download
 

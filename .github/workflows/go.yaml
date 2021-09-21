@@ -31,7 +31,7 @@ jobs:
           buildinfo += '\t'+`builder = "${context.actor}"`+'\n'
           buildinfo += '\t'+`commit  = "${context.sha}"`+'\n'
           buildinfo += ')\n'
-          await fs.writeFile('internal/buildinfo.go', buildinfo)
+          fs.writeFileSync('internal/buildinfo.go', buildinfo)
 
     - name: Inspect internal/buildinfo.go
       run: cat internal/buildinfo.go

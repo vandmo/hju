@@ -44,6 +44,9 @@ jobs:
     - name: Inspect internal/buildinfo.go
       run: cat internal/buildinfo.go
 
+    - name: Commit internal/buildinfo.go
+      run: git add internal/buildinfo.go && git commit -m"Add internal/buildinfo.go"
+
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v2
       with:

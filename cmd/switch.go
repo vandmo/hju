@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/vandmo/hju/core"
 	"github.com/vandmo/hju/git"
@@ -19,7 +21,7 @@ var switchCmd = &cobra.Command{
 			return parseErr
 		}
 		for _, folder := range hjuFile.Folders {
-			gitErr := git.Switch(folder, branch, create)
+			gitErr := doSwitch(folder, branch, create)
 			if gitErr != nil {
 				return gitErr
 			}
@@ -31,4 +33,22 @@ var switchCmd = &cobra.Command{
 func init() {
 	switchCmd.Flags().BoolVarP(&create, "create", "c", false, "create the branch if it doesn't exist")
 	rootCmd.AddCommand(switchCmd)
+}
+
+func doSwitch(folder string, branch string, create bool) error {
+	hasRef, err := git.HasRef(folder, branch)
+	if err != nil {
+		return err
+	}
+
+	if hasRef {
+		fmt.Printf("--- \033[32mSwitching to branch %s in %s\033[0m\n", branch, folder)
+		return git.Switch(folder, branch, false)
+	} else if create {
+		fmt.Printf("--- \033[32mCreating and switching to branch %s in %s\033[0m\n", branch, folder)
+		return git.Switch(folder, branch, true)
+	} else {
+		fmt.Printf("--- \033[32mNOT creating NOR switching to branch %s in %s\033[0m\n", branch, folder)
+		return nil
+	}
 }

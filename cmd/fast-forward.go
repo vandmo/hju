@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/vandmo/hju/core"
 	"github.com/vandmo/hju/git"
@@ -16,6 +18,7 @@ var ffCmd = &cobra.Command{
 			return parseErr
 		}
 		for _, folder := range hjuFile.Folders {
+			fmt.Println("--- \033[32mFast forwarding " + folder + "\033[0m")
 			gitErr := git.FastForward(folder)
 			if gitErr != nil {
 				return gitErr

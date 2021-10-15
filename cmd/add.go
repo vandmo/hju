@@ -24,7 +24,7 @@ var addCmd = &cobra.Command{
 			return fmt.Errorf("Trying to add %s which already exists", folderName)
 		}
 
-		gitErr := git.Clone(repository)
+		gitErr := clone(repository)
 		if gitErr != nil {
 			return gitErr
 		}

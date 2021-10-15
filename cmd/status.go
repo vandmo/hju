@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/spf13/cobra"
 	"github.com/vandmo/hju/core"
 	"github.com/vandmo/hju/git"
@@ -16,7 +19,7 @@ var statusCmd = &cobra.Command{
 			return parseErr
 		}
 		for _, folder := range hjuFile.Folders {
-			gitErr := git.PrintStatus(folder)
+			gitErr := doPrintStatus(folder)
 			if gitErr != nil {
 				return gitErr
 			}
@@ -27,4 +30,23 @@ var statusCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(statusCmd)
+}
+
+func doPrintStatus(folder string) error {
+	ref, err := git.SymbolicRef(folder, "HEAD")
+	if err != nil {
+		return err
+	}
+	lastSlashInd := strings.LastIndex(ref, "/")
+	branch := strings.TrimSpace(ref[lastSlashInd+1:])
+	status, statusErr := git.GetStatus(folder)
+	if statusErr != nil {
+		return statusErr
+	}
+	fmt.Printf("\033[32m%s\033[0m (\033[36m%s\033[0m)", folder, branch)
+	if status.Tracked > 0 || status.Untracked > 0 {
+		fmt.Printf(" \033[31m[T%d,U%d]\033[0m", status.Tracked, status.Untracked)
+	}
+	fmt.Println()
+	return nil
 }

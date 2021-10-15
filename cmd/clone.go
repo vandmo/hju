@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/vandmo/hju/core"
-	"github.com/vandmo/hju/git"
 )
 
 var cloneCmd = &cobra.Command{
@@ -16,7 +15,7 @@ var cloneCmd = &cobra.Command{
 			return parseErr
 		}
 		for _, repository := range hjuFile.Repositories {
-			gitErr := git.Clone(repository)
+			gitErr := clone(repository)
 			if gitErr != nil {
 				return gitErr
 			}

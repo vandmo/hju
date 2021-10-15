@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"path"
 
 	"github.com/spf13/cobra"
 	"github.com/vandmo/hju/core"
@@ -13,7 +14,7 @@ var removeCmd = &cobra.Command{
 	Short: "Removes a repository by it's folder name",
 	Args:  cobra.ExactValidArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		folder := args[0]
+		folder := path.Clean(args[0])
 		hjuFile, parseErr := core.ParseHjuFile()
 		if parseErr != nil {
 			return parseErr
@@ -23,6 +24,7 @@ var removeCmd = &cobra.Command{
 			return fmt.Errorf("Trying to remove %s which isn't managed", folder)
 		}
 
+		fmt.Printf("Removing %s\n", folder)
 		hjuFile.RemoveByFolder(folder)
 
 		writeErr := hjuFile.Write()

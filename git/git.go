@@ -60,7 +60,6 @@ func Switch(folder string, branch string, create bool) error {
 	} else {
 		return run("-C", folder, "switch", branch)
 	}
-	return nil
 }
 
 func GetDivergence(folder string, commit string) (*Divergence, error) {

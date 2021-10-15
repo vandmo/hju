@@ -61,6 +61,9 @@ Lists all managed folders. Can be used as pipe input.
 ## remove
 Removes a repository based on its folder name.
 
+## repositories
+Lists all managed repositories. Can be used as pipe input.
+
 ## status
 Prints a summary of the status of all child repositories.
 

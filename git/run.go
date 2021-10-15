@@ -1,6 +1,7 @@
 package git
 
 import (
+	"errors"
 	"os"
 	"os/exec"
 
@@ -25,8 +26,11 @@ func run(arg ...string) error {
 	return cmd.Run()
 }
 
-func runC(folder string, arg0 string, arg1 string) (string, error) {
-	cmd, err := command("-C", folder, arg0, arg1)
+func runC(folder string, arg ...string) (string, error) {
+	args := make([]string, 0, 2+len(arg))
+	args = append(args, "-C", folder)
+	args = append(args, arg...)
+	cmd, err := command(args...)
 	if err != nil {
 		return "", err
 	}
@@ -35,4 +39,23 @@ func runC(folder string, arg0 string, arg1 string) (string, error) {
 		return "", cmdErr
 	}
 	return string(out), nil
+}
+
+func runC_isSuccess(folder string, arg ...string) (bool, error) {
+	args := make([]string, 0, 2+len(arg))
+	args = append(args, "-C", folder)
+	args = append(args, arg...)
+	cmd, err := command(args...)
+	if err != nil {
+		return false, err
+	}
+	runErr := cmd.Run()
+	if runErr == nil {
+		return true, nil
+	}
+	var exitError *exec.ExitError
+	if errors.As(runErr, &exitError) && exitError.ExitCode() == 1 {
+		return false, nil
+	}
+	return false, runErr
 }

@@ -2,10 +2,8 @@ package git
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 )
 
@@ -36,25 +34,22 @@ func Status(folder string) (*Summary, error) {
 	return &summary, nil
 }
 
+func HasCommit(folder string, commit string) (bool, error) {
+	return runC_isSuccess(folder, "rev-parse", "--quiet", "--verify", commit+"^{commit}")
+}
+
 func HasRef(folder string, ref string) (bool, error) {
-	cmd, err := command("-C", folder, "show-ref", "--quiet", ref)
-	if err != nil {
-		return false, err
-	}
-	runErr := cmd.Run()
-	if runErr == nil {
-		return true, nil
-	}
-	var exitError *exec.ExitError
-	if errors.As(runErr, &exitError) && exitError.ExitCode() == 1 {
-		return false, nil
-	}
-	return false, runErr
+	return runC_isSuccess(folder, "show-ref", "--quiet", ref)
 }
 
 func FastForward(folder string) error {
-	fmt.Println("--- \033[32mFᴀsᴛ Fᴏʀᴡᴀʀᴅɪɴɢ " + folder + "\033[0m")
+	fmt.Println("--- \033[32mFast forwarding " + folder + "\033[0m")
 	return run("-C", folder, "pull", "--ff-only")
+}
+
+func Fetch(folder string) error {
+	fmt.Println("--- \033[32mFetching " + folder + "\033[0m")
+	return run("-C", folder, "fetch")
 }
 
 func Switch(folder string, branch string, create bool) error {
@@ -73,6 +68,29 @@ func Switch(folder string, branch string, create bool) error {
 		fmt.Printf("--- \033[32mNOT creating NOR switching to branch %s in %s\033[0m\n", branch, folder)
 		return nil
 	}
+}
+
+func PrintDivergence(folder string, commit string) error {
+	hasCommit, hasCommitErr := HasCommit(folder, commit)
+	if hasCommitErr != nil {
+		return hasCommitErr
+	}
+	if !hasCommit {
+		fmt.Printf("%s \033[31m[no-such-commit]\033[0m\n", folder)
+		return nil
+	}
+	lines, revListErr := runC(folder, "rev-list", "--left-right", "--count", "HEAD..."+commit)
+	if revListErr != nil {
+		return revListErr
+	}
+	fields := strings.Fields(lines)
+	if fields[0] == "0" && fields[1] == "0" {
+		fmt.Printf("%s (\033[36mup-to-date\033[0m)", folder)
+	} else {
+		fmt.Printf("%s \033[33m[A%s,B%s]\033[0m", folder, fields[0], fields[1])
+	}
+	fmt.Println()
+	return nil
 }
 
 func PrintStatus(folder string) error {
@@ -97,10 +115,10 @@ func PrintStatus(folder string) error {
 func Clone(url string) error {
 	folderName := FolderName(url)
 	if _, err := os.Stat(folderName); err == nil {
-		fmt.Println("--- \033[33mℕ𝕆𝕋 𝕔𝕝𝕠𝕟𝕚𝕟𝕘: " + url + "\033[0m")
+		fmt.Println("--- \033[33mNOT cloning: " + url + "\033[0m")
 		return nil
 	}
-	fmt.Println("--- \033[32mℂ𝕃𝕆ℕ𝕀ℕ𝔾: " + url + "\033[0m")
+	fmt.Println("--- \033[32mCloning: " + url + "\033[0m")
 	return run("clone", url)
 }
 

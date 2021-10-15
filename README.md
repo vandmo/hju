@@ -42,20 +42,27 @@ This will have created a file named _hju.json_ which contains a list of the adde
 ## clone
 Clones all child repositories.
 
-## folders
-Lists all managed folders. Can be used as pipe input.
+## divergence
+Prints how each managed repository diverges from a specic commit.
+The commit can be a branch name or anything supported by `git rev-list`.
 
-## switch [-c|--create]
-Switches to a branch in all managed repositories. Optionally creates it if missing.
+## fast-forward
+Runs `git pull --ff-only` in all child repositories.
+
+## fetch
+Runs `git fetch` in all child repositories.
 
 ## fix
 Normalizes hju.json and makes sure all entries are in .gitignore
 
-## fast-forward
-Runs `git pull --ff-only` in all child repositories.
+## folders
+Lists all managed folders. Can be used as pipe input.
 
 ## remove
 Removes a repository based on its folder name.
 
 ## status
 Prints a summary of the status of all child repositories.
+
+## switch [-c|--create]
+Switches to a branch in all managed repositories. Optionally creates it if missing.

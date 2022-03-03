@@ -7,7 +7,7 @@ import (
 )
 
 func SymbolicRef(folder string, symbol string) (string, error) {
-	return runC(folder, "symbolic-ref", symbol)
+	return runC(folder, "symbolic-ref", "--quiet", symbol)
 }
 
 type Status struct {
@@ -30,7 +30,7 @@ func GetStatus(folder string) (*Status, error) {
 	for sc.Scan() {
 		line := sc.Text()
 		if line[0] == '?' {
-			status.Untracked += 1
+			status.Untracked++
 		} else {
 			status.Tracked++
 		}

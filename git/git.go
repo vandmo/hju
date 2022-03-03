@@ -62,6 +62,10 @@ func Switch(folder string, branch string, create bool) error {
 	}
 }
 
+func Reset(folder string, commit string) error {
+	return run("-C", folder, "reset", commit)
+}
+
 func GetDivergence(folder string, commit string) (*Divergence, error) {
 	lines, revListErr := runC(folder, "rev-list", "--left-right", "--count", "HEAD..."+commit)
 	if revListErr != nil {

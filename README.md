@@ -64,6 +64,9 @@ Removes a repository based on its folder name.
 ## repositories
 Lists all managed repositories. Can be used as pipe input.
 
+## reset
+Resets to a commit in all managed repositories.
+
 ## status
 Prints a summary of the status of all child repositories.
 

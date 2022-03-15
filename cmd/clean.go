@@ -31,7 +31,7 @@ var cleanCmd = &cobra.Command{
 }
 
 func init() {
-  cleanCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
+	cleanCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	cleanCmd.Flags().BoolVarP(&recurse, "recurse", "d", false, "recurse")
 	rootCmd.AddCommand(cleanCmd)
 }

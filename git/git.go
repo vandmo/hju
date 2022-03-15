@@ -62,8 +62,24 @@ func Switch(folder string, branch string, create bool) error {
 	}
 }
 
+func Clean(folder string, force bool, recurse bool) error {
+	args := make([]string, 0, 5)
+	args = append(args, "-C", folder, "clean")
+	if force {
+		args = append(args, "--force")
+	}
+	if recurse {
+		args = append(args, "-d")
+	}
+	return run(args...)
+}
+
 func Reset(folder string, commit string) error {
 	return run("-C", folder, "reset", commit)
+}
+
+func Restore(folder string, pathspec string) error {
+	return run("-C", folder, "restore", pathspec)
 }
 
 func GetDivergence(folder string, commit string) (*Divergence, error) {

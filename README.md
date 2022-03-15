@@ -39,6 +39,9 @@ git push
 This will have created a file named _hju.json_ which contains a list of the added repositories.
 .gitignore will also have been updated to exclude the folders dependency-lock-maven-plugin and google-java-format.
 
+## clean
+Cleans all managed repositories.
+
 ## clone
 Clones all child repositories.
 
@@ -66,6 +69,9 @@ Lists all managed repositories. Can be used as pipe input.
 
 ## reset
 Resets to a commit in all managed repositories.
+
+## restore
+Restores all managed repositories.
 
 ## status
 Prints a summary of the status of all child repositories.
